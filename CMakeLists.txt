@@ -7,7 +7,10 @@
 project(light_garbage_collector)
 cmake_minimum_required(VERSION 3.1)
 
-install(FILES mark_sweep_collector.hpp DESTINATION include/light_garbage_collector)
+install(FILES
+  mark_sweep_collector.hpp
+  incremental_mark_sweep_collector.hpp
+  DESTINATION include/light_garbage_collector)
 
 aux_source_directory(. SRC_LIST)
 

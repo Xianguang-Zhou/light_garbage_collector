@@ -20,15 +20,15 @@ void MarkSweepCollector::clean() {
 	std::list<void *> toScanObjects;
 
 	// mark
-	Objects *globalObjects = context.getGlobalObjects();
-	for (void *object = globalObjects->nextObject(); NULL != object; object =
-			globalObjects->nextObject()) {
+	Objects *rootObjects = context.getRootObjects();
+	for (void *object = rootObjects->nextObject(); NULL != object; object =
+			rootObjects->nextObject()) {
 		if (0 == context.getMark(object)) {
 			context.setMark(object, 1);
 			toScanObjects.push_back(object);
 		}
 	}
-	delete globalObjects;
+	delete rootObjects;
 
 	while (!toScanObjects.empty()) {
 		void *object = toScanObjects.back();
@@ -50,8 +50,8 @@ void MarkSweepCollector::clean() {
 	for (void *object = allObjects->nextObject(); NULL != object; object =
 			allObjects->nextObject()) {
 		if (0 == context.getMark(object)) {
-			context.finalizeObject(object);
 			toScanObjects.push_back(object);
+			context.finalizeObject(object);
 		} else {
 			context.setMark(object, 0);
 		}

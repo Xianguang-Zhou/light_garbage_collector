@@ -28,7 +28,7 @@ public:
 		virtual void freeObject(void *object)=0;
 		virtual Objects *getProperties(void *object)=0;
 		virtual Objects *getAllObjects()=0;
-		virtual Objects *getGlobalObjects()=0;
+		virtual Objects *getRootObjects()=0;
 		virtual void setMark(void *object, char value)=0;
 		virtual char getMark(void *object)=0;
 	};
