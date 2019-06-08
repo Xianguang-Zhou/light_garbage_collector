@@ -1,24 +1,25 @@
 /*
- * Copyright (c) 2018, Xianguang Zhou <xianguang.zhou@outlook.com>. All rights reserved.
+ * Copyright (c) 2018, 2019, Xianguang Zhou <xianguang.zhou@outlook.com>. All rights
+ * reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include "incremental_mark_sweep_collector.h"
+
 #include <cstddef>
-#include "incremental_mark_sweep_collector.hpp"
 
 namespace Lgc {
 
-IncrementalMarkSweepCollector::IncrementalMarkSweepCollector(Context& context) :
-		context(context) {
-}
+IncrementalMarkSweepCollector::IncrementalMarkSweepCollector(Context &context)
+	: context(context) {}
 
 void IncrementalMarkSweepCollector::initialMark() {
 	Objects *rootObjects = context.getRootObjects();
-	for (void *object = rootObjects->nextObject(); NULL != object; object =
-			rootObjects->nextObject()) {
+	for (void *object = rootObjects->nextObject(); NULL != object;
+		 object = rootObjects->nextObject()) {
 		if (0 == context.getMark(object)) {
 			context.setMark(object, 1);
 			toScanObjects.push_back(object);
@@ -39,7 +40,7 @@ bool IncrementalMarkSweepCollector::incrementalMark() {
 
 		Objects *properties = context.getProperties(object);
 		for (void *property = properties->nextObject(); NULL != property;
-				property = properties->nextObject()) {
+			 property = properties->nextObject()) {
 			if (0 == context.getMark(property)) {
 				context.setMark(property, 1);
 				toScanObjects.push_back(property);
@@ -99,5 +100,5 @@ bool IncrementalMarkSweepCollector::incrementalFree() {
 		return true;
 	}
 }
-}
 
+} // namespace Lgc

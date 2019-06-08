@@ -1,3 +1,7 @@
-.project
+/build/
 *.swp
-
+/.project
+/.cproject
+/.pydevproject
+/.settings/
+/compile_commands.json

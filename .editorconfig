@@ -1,0 +1,20 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+trim_trailing_whitespace = true
+insert_final_newline = false
+indent_size = 4
+
+[*.{cpp,hpp,cl}]
+indent_style = tab
+
+[meson.build]
+indent_style = tab
+
+[.clang-format]
+indent_style = tab
+
+[*.py]
+indent_style = space

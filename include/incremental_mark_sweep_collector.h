@@ -1,41 +1,24 @@
 /*
- * Copyright (c) 2018, Xianguang Zhou <xianguang.zhou@outlook.com>. All rights reserved.
+ * Copyright (c) 2018, 2019, Xianguang Zhou <xianguang.zhou@outlook.com>. All rights
+ * reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef LGC_INCREMENTAL_MARK_SWEEP_COLLECTOR_HPP
-#define LGC_INCREMENTAL_MARK_SWEEP_COLLECTOR_HPP
+#ifndef LGC_INCREMENTAL_MARK_SWEEP_COLLECTOR_H_
+#define LGC_INCREMENTAL_MARK_SWEEP_COLLECTOR_H_
 
 #include <list>
+
+#include "context.h"
 
 namespace Lgc {
 
 class IncrementalMarkSweepCollector {
-public:
-
-	class Objects {
-	public:
-		virtual void *nextObject()=0;
-		virtual ~Objects() {
-		}
-	};
-
-	class Context {
-	public:
-		virtual void finalizeObject(void *object) {
-		}
-		virtual void freeObject(void *object)=0;
-		virtual Objects *getProperties(void *object)=0;
-		virtual Objects *getAllObjects()=0;
-		virtual Objects *getRootObjects()=0;
-		virtual void setMark(void *object, char value)=0;
-		virtual char getMark(void *object)=0;
-	};
-
-	explicit IncrementalMarkSweepCollector(Context& context);
+  public:
+	explicit IncrementalMarkSweepCollector(Context &context);
 
 	// Garbage collection steps begin.
 
@@ -66,12 +49,12 @@ public:
 
 	// Garbage collection steps end.
 
-private:
-	Context& context;
+  private:
+	Context &context;
 	std::list<void *> toScanObjects;
 	Objects *allObjects;
 };
-}
+
+} // namespace Lgc
 
 #endif
-
