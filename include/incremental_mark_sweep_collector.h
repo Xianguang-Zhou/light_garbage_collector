@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2018, 2019, Xianguang Zhou <xianguang.zhou@outlook.com>. All rights
- * reserved.
+ * Copyright (c) 2018, 2019, Xianguang Zhou <xianguang.zhou@outlook.com>. All
+ * rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -10,9 +10,9 @@
 #ifndef LGC_INCREMENTAL_MARK_SWEEP_COLLECTOR_H_
 #define LGC_INCREMENTAL_MARK_SWEEP_COLLECTOR_H_
 
-#include <list>
-
 #include "context.h"
+
+#include <forward_list>
 
 namespace Lgc {
 
@@ -51,7 +51,7 @@ class IncrementalMarkSweepCollector {
 
   private:
 	Context &context;
-	std::list<void *> toScanObjects;
+	std::forward_list<void *> toScanObjects;
 	Objects *allObjects;
 };
 

@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 2018, 2019, Xianguang Zhou <xianguang.zhou@outlook.com>. All rights
- * reserved.
+ * Copyright (c) 2018, 2019, Xianguang Zhou <xianguang.zhou@outlook.com>. All
+ * rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,8 +9,6 @@
 
 #include "incremental_mark_sweep_collector.h"
 
-#include <cstddef>
-
 namespace Lgc {
 
 IncrementalMarkSweepCollector::IncrementalMarkSweepCollector(Context &context)
@@ -18,11 +16,11 @@ IncrementalMarkSweepCollector::IncrementalMarkSweepCollector(Context &context)
 
 void IncrementalMarkSweepCollector::initialMark() {
 	Objects *rootObjects = context.getRootObjects();
-	for (void *object = rootObjects->nextObject(); NULL != object;
+	for (void *object = rootObjects->nextObject(); nullptr != object;
 		 object = rootObjects->nextObject()) {
 		if (0 == context.getMark(object)) {
 			context.setMark(object, 1);
-			toScanObjects.push_back(object);
+			toScanObjects.push_front(object);
 		}
 	}
 	delete rootObjects;
@@ -34,16 +32,16 @@ bool IncrementalMarkSweepCollector::incrementalMark() {
 
 		return false;
 	} else {
-		void *object = toScanObjects.back();
-		toScanObjects.pop_back();
+		void *object = toScanObjects.front();
+		toScanObjects.pop_front();
 		context.setMark(object, 2);
 
 		Objects *properties = context.getProperties(object);
-		for (void *property = properties->nextObject(); NULL != property;
+		for (void *property = properties->nextObject(); nullptr != property;
 			 property = properties->nextObject()) {
 			if (0 == context.getMark(property)) {
 				context.setMark(property, 1);
-				toScanObjects.push_back(property);
+				toScanObjects.push_front(property);
 			}
 		}
 		delete properties;
@@ -55,20 +53,20 @@ bool IncrementalMarkSweepCollector::incrementalMark() {
 void IncrementalMarkSweepCollector::writeBarrier(void *object, void *property) {
 	if (2 == context.getMark(object) && 0 == context.getMark(property)) {
 		context.setMark(property, 1);
-		toScanObjects.push_back(property);
+		toScanObjects.push_front(property);
 	}
 }
 
 bool IncrementalMarkSweepCollector::incrementalFinalize() {
 	void *object = this->allObjects->nextObject();
-	if (NULL == object) {
+	if (nullptr == object) {
 		delete this->allObjects;
 
 		return false;
 	} else {
 		char mark = context.getMark(object);
 		if (0 == mark) {
-			toScanObjects.push_back(object);
+			toScanObjects.push_front(object);
 			context.finalizeObject(object);
 		} else if (2 == mark) {
 			context.setMark(object, 0);
@@ -80,15 +78,15 @@ bool IncrementalMarkSweepCollector::incrementalFinalize() {
 
 void IncrementalMarkSweepCollector::allocBarrier(void *object) {
 	context.setMark(object, 1);
-	toScanObjects.push_back(object);
+	toScanObjects.push_front(object);
 }
 
 bool IncrementalMarkSweepCollector::incrementalFree() {
 	if (toScanObjects.empty()) {
 		return false;
 	} else {
-		void *object = toScanObjects.back();
-		toScanObjects.pop_back();
+		void *object = toScanObjects.front();
+		toScanObjects.pop_front();
 
 		char mark = context.getMark(object);
 		if (0 == mark) {
