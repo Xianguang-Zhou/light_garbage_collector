@@ -5,3 +5,4 @@
 /.pydevproject
 /.settings/
 /compile_commands.json
+/.clangd/
